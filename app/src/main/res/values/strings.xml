@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">lion_shool</string>
+    <string name="school_name">Lion school</string>
+    <string name="classes_button">Turmas</string>
+    <string name="welcome">Bem vindo</string>
+    <string name="choose_one">Escolha um</string>
+    <string name="course">curso</string>
+    <string name="to_manage">para gerenciar</string>
+    <string name="ds_button">Ds</string>
+    <string name="rds_button">Rds</string>
+    <string name="title_activity_select_course">SelectCourse</string>
+    <string name="title_activity_selected_course">SelectedCourse</string>
+    <string name="course_name">Desenvolvimento de Sistemas</string>
+    <string name="status_studying">Cursando</string>
+    <string name="status_finished">Finalizado</string>
+    <string name="year_2018">2018</string>
+    <string name="year_2020">2020</string>
+    <string name="year_2021">2021</string>
+    <string name="year_2022">2022</string>
+    <string name="year_2023">2023</string>
+    <string name="student_name">Nome do aluno</string>
+    <string name="student_status">Cursando</string>
+
+
+</resources>
