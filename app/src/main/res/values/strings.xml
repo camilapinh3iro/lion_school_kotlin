@@ -24,6 +24,7 @@
     <string name="instagram_description">Instagram</string>
     <string name="twitter_description">Twitter</string>
     <string name="youtube_description">Youtube</string>
+    <string name="title_activity_selected_student">SelectedStudentActivity</string>
 
 
 </resources>

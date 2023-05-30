@@ -1,6 +1,7 @@
 package br.senai.sp.jandira.lion_shool.gui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -20,6 +21,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.senai.sp.jandira.lion_shool.R
 import br.senai.sp.jandira.lion_shool.gui.ui.theme.Lion_shoolTheme
+import br.senai.sp.jandira.lion_shool.model.Course
+import br.senai.sp.jandira.lion_shool.model.CourseList
+import br.senai.sp.jandira.lion_shool.service.RetrofitFactory
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class SelectCourse : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,27 +49,7 @@ fun SelectCourseScreen() {
         mutableStateOf(listOf<br.senai.sp.jandira.lion_shool.model.Course>())
     }
 
-//        // Chamada para a API
-//        val call = RetrofitFactory
-//
-//        call.enqueue(object : Callback<CharacterList> {
-//
-//            override fun onResponse(
-//                call: Call<CharacterList>,
-//                response: Response<CharacterList>
-//            ) {
-//                results = response.body()!!.results
-//                info = response.body()!!.info
-//            }
-//
-//            override fun onFailure(call: Call<CharacterList>, t: Throwable) {
-//                Log.i(
-//                    "ds2m",
-//                    "onFailure: ${t.message} "
-//                )
-//            }
-//
-//        })
+
 
 
 
@@ -157,8 +144,30 @@ fun SelectCourseScreen() {
                     )
                 }
             }
-            
+
         }
+
+                // Chamada para a API
+        val call = RetrofitFactory().getCourseService().getCourses()
+
+        call.enqueue(object : Callback<CourseList> {
+
+            override fun onResponse(
+                call: Call<CourseList>,
+                response: Response<CourseList>
+            ) {
+                courses = response.body()!!.courses
+                Log.i("ds2m", "onResponse: ${courses[0].sigla}")
+            }
+
+            override fun onFailure(call: Call<CourseList>, t: Throwable) {
+                Log.i(
+                    "ds2m",
+                    "onFailure: ${t.message} "
+                )
+            }
+
+        })
     }
 
 }

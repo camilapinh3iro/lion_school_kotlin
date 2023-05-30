@@ -12,7 +12,12 @@
         android:theme="@style/Theme.Lion_shool"
         tools:targetApi="31">
         <activity
-            android:name=".gui.ContactUs"
+            android:name=".gui.SelectedCourse"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.Lion_shool" />
+        <activity
+            android:name=".gui.ContactUsActivity"
             android:exported="false"
             android:label="@string/title_activity_contact_us"
             android:theme="@style/Theme.Lion_shool" />
@@ -27,9 +32,9 @@
             android:label="@string/title_activity_select_course"
             android:theme="@style/Theme.Lion_shool" />
         <activity
-            android:name=".gui.SelectedCourse"
+            android:name=".gui.SelectedStudentActivity"
             android:exported="true"
-            android:label="@string/app_name"
+            android:label="@string/title_activity_selected_student"
             android:theme="@style/Theme.Lion_shool">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -40,3 +45,4 @@
     </application>
 
 </manifest>
+
