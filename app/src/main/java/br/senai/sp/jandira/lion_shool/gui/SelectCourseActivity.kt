@@ -1,6 +1,5 @@
 package br.senai.sp.jandira.lion_shool.gui
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -8,14 +7,13 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -40,6 +38,34 @@ class SelectCourse : ComponentActivity() {
 @Preview(showBackground = true)
 @Composable
 fun SelectCourseScreen() {
+    var courses by remember {
+        mutableStateOf(listOf<br.senai.sp.jandira.lion_shool.model.Course>())
+    }
+
+//        // Chamada para a API
+//        val call = RetrofitFactory
+//
+//        call.enqueue(object : Callback<CharacterList> {
+//
+//            override fun onResponse(
+//                call: Call<CharacterList>,
+//                response: Response<CharacterList>
+//            ) {
+//                results = response.body()!!.results
+//                info = response.body()!!.info
+//            }
+//
+//            override fun onFailure(call: Call<CharacterList>, t: Throwable) {
+//                Log.i(
+//                    "ds2m",
+//                    "onFailure: ${t.message} "
+//                )
+//            }
+//
+//        })
+
+
+
     Lion_shoolTheme {
         Surface(
             modifier = Modifier.fillMaxSize()

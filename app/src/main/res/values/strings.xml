@@ -19,7 +19,11 @@
     <string name="year_2022">2022</string>
     <string name="year_2023">2023</string>
     <string name="student_name">Nome do aluno</string>
-    <string name="student_status">Cursando</string>
+    <string name="title_activity_contact_us">ContactUs</string>
+    <string name="facebook_description">Facebook</string>
+    <string name="instagram_description">Instagram</string>
+    <string name="twitter_description">Twitter</string>
+    <string name="youtube_description">Youtube</string>
 
 
 </resources>
