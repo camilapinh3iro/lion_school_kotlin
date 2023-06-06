@@ -1,17 +1,23 @@
 package br.senai.sp.jandira.lion_shool.gui
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -22,26 +28,59 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.senai.sp.jandira.lion_shool.R
 import br.senai.sp.jandira.lion_shool.gui.ui.theme.ui.theme.Lion_shoolTheme
+import br.senai.sp.jandira.lion_shool.model.CursosList
+import br.senai.sp.jandira.lion_shool.model.StudentList
+import br.senai.sp.jandira.lion_shool.service.RetrofitFactory
+import coil.compose.AsyncImage
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class SelectedCourse : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        var siglaCurso = intent.getStringExtra("sigla").toString()
+        var nomeCurso = intent.getStringExtra("nome").toString()
+        Log.i("ds2m", "${siglaCurso}")
         setContent {
             Lion_shoolTheme {
                 // A surface container using the 'background' color from the theme
-                SelectedCourseScreen()
+                SelectedCourseScreen(siglaCurso, nomeCurso)
             }
         }
     }
 }
 
 
-@Preview(showBackground = true)
+//@Preview(showBackground = true)
 @Composable
-fun SelectedCourseScreen() {
-//    var results by remember {
-//        mutableStateOf(listOf<br.senai.sp.jandira.rickandmorty.model.Character>())
-//    }
+fun SelectedCourseScreen(sigla: String, nome: String) {
+    var context = LocalContext.current
+    var alunos by remember {
+        mutableStateOf(listOf<br.senai.sp.jandira.lion_shool.model.Student>())
+    }
+
+    // Chamada para a API
+    val call = RetrofitFactory().getAunosService().getAlunos(sigla)
+
+    call.enqueue(object : Callback<StudentList> {
+
+        override fun onResponse(
+            call: Call<StudentList>,
+            response: Response<StudentList>
+        ) {
+            alunos = response.body()!!.alunos
+            Log.i("ds2m", "onResponse: ${alunos}")
+        }
+
+        override fun onFailure(call: Call<StudentList>, t: Throwable) {
+            Log.i(
+                "ds2m",
+                "onFailure: ${t.message} "
+            )
+        }
+
+    })
 
     Lion_shoolTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
@@ -70,7 +109,7 @@ fun SelectedCourseScreen() {
                             Text(
                                 modifier = Modifier.fillMaxWidth(),
                                 textAlign = TextAlign.Center,
-                                text = stringResource(R.string.course_name).uppercase(),
+                                text = nome,
                                 fontSize = 15.sp,
                                 fontWeight = FontWeight.Normal,
                                 color = Color.White,
@@ -135,102 +174,152 @@ fun SelectedCourseScreen() {
                 }
                 Spacer(modifier = Modifier.height(35.dp))
 
-                Column() {
-                    Card(
-                        modifier = Modifier
-                            .height(78.dp)
-                            .fillMaxWidth(),
-                        backgroundColor = Color.White
-
-                    ) {
-                        Row(
+                LazyColumn() {
+                    items(alunos) {
+                        Card(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 10.dp, end = 10.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Row(modifier = Modifier.fillMaxHeight(),
-                            verticalAlignment = Alignment.CenterVertically) {
-                                Image(
-                                    painterResource(id = R.drawable.student_boy),
-                                    contentDescription = "Student",
-                                    modifier = Modifier
-                                        .width(60.dp)
-                                        .height(60.dp)
-                                )
-                                Spacer(modifier = Modifier.width(15.dp))
+                                .height(78.dp)
+                                .fillMaxWidth().clickable {
+                                    val intent = Intent(context, SelectedStudentActivity::class.java)
+                                    context.startActivity(intent)
+                                },
+                            backgroundColor = Color.White
 
-                                Column() {
-                                    Text(text = stringResource(id = R.string.student_name))
-                                    Text(text = stringResource(id = R.string.status_studying),
-                                    color = Color(red = 93, green = 92, blue = 92),
-                                    fontSize = (14.sp))
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 10.dp, end = 10.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Row(
+                                    modifier = Modifier.fillMaxHeight(),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+
+                                    AsyncImage(
+                                        model = it.foto,
+                                        contentDescription = "${it.nome}",
+                                        modifier = Modifier
+                                            .width(60.dp)
+                                            .height(60.dp)
+                                    )
+
+                                    Spacer(modifier = Modifier.width(15.dp))
+
+                                    Column() {
+                                        Text(
+                                            "${it.nome}"
+                                        )
+                                        Text(
+                                            "${it.status}",
+                                            color = Color(red = 93, green = 92, blue = 92),
+                                            fontSize = (14.sp)
+                                        )
+                                    }
                                 }
                             }
-
-
-                            Card(
-                                modifier = Modifier
-                                    .height(15.dp)
-                                    .width(15.dp),
-                                shape = RoundedCornerShape(15.dp),
-                                backgroundColor = Color(red = 51, green = 71, blue = 176)
-                            ) {
-
-                            }
-
                         }
                     }
-                    Card(
-                        modifier = Modifier
-                            .height(78.dp)
-                            .fillMaxWidth(),
-                        backgroundColor = Color.White
 
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 10.dp, end = 10.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Row(modifier = Modifier.fillMaxHeight(),
-                                verticalAlignment = Alignment.CenterVertically) {
-                                Image(
-                                    painterResource(id = R.drawable.student_boy),
-                                    contentDescription = "Student",
-                                    modifier = Modifier
-                                        .width(60.dp)
-                                        .height(60.dp)
-                                )
-                                Spacer(modifier = Modifier.width(15.dp))
+//                Column() {
+//                    Card(
+//                        modifier = Modifier
+//                            .height(78.dp)
+//                            .fillMaxWidth(),
+//                        backgroundColor = Color.White
+//
+//                    ) {
+//                        Row(
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .padding(start = 10.dp, end = 10.dp),
+//                            verticalAlignment = Alignment.CenterVertically,
+//                            horizontalArrangement = Arrangement.SpaceBetween
+//                        ) {
+//                            Row(modifier = Modifier.fillMaxHeight(),
+//                            verticalAlignment = Alignment.CenterVertically) {
+//                                Image(
+//                                    painterResource(id = R.drawable.student_boy),
+//                                    contentDescription = "Student",
+//                                    modifier = Modifier
+//                                        .width(60.dp)
+//                                        .height(60.dp)
+//                                )
+//                                Spacer(modifier = Modifier.width(15.dp))
+//
+//                                Column() {
+//                                    Text(text = stringResource(id = R.string.student_name))
+//                                    Text(text = stringResource(id = R.string.status_studying),
+//                                    color = Color(red = 93, green = 92, blue = 92),
+//                                    fontSize = (14.sp))
+//                                }
+//                            }
+//
+//
+//                            Card(
+//                                modifier = Modifier
+//                                    .height(15.dp)
+//                                    .width(15.dp),
+//                                shape = RoundedCornerShape(15.dp),
+//                                backgroundColor = Color(red = 51, green = 71, blue = 176)
+//                            ) {
+//
+//                            }
+//
+//                        }
+//                    }
+//                    Card(
+//                        modifier = Modifier
+//                            .height(78.dp)
+//                            .fillMaxWidth(),
+//                        backgroundColor = Color.White
+//
+//                    ) {
+//                        Row(
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .padding(start = 10.dp, end = 10.dp),
+//                            verticalAlignment = Alignment.CenterVertically,
+//                            horizontalArrangement = Arrangement.SpaceBetween
+//                        ) {
+//                            Row(modifier = Modifier.fillMaxHeight(),
+//                                verticalAlignment = Alignment.CenterVertically) {
+//                                Image(
+//                                    painterResource(id = R.drawable.student_boy),
+//                                    contentDescription = "Student",
+//                                    modifier = Modifier
+//                                        .width(60.dp)
+//                                        .height(60.dp)
+//                                )
+//                                Spacer(modifier = Modifier.width(15.dp))
+//
+//                                Column() {
+//                                    Text(text = stringResource(id = R.string.student_name))
+//                                    Text(text = stringResource(id = R.string.status_finished),
+//                                        color = Color(red = 93, green = 92, blue = 92),
+//                                        fontSize = (14.sp))
+//                                }
+//                            }
+//
+//
+//                            Card(
+//                                modifier = Modifier
+//                                    .height(15.dp)
+//                                    .width(15.dp),
+//                                shape = RoundedCornerShape(15.dp),
+//                                backgroundColor = Color(red = 255, green = 193, blue = 62)
+//                            ) {
+//
+//                            }
+//
+//                        }
+//                    }
+//                }
 
-                                Column() {
-                                    Text(text = stringResource(id = R.string.student_name))
-                                    Text(text = stringResource(id = R.string.status_finished),
-                                        color = Color(red = 93, green = 92, blue = 92),
-                                        fontSize = (14.sp))
-                                }
-                            }
 
-
-                            Card(
-                                modifier = Modifier
-                                    .height(15.dp)
-                                    .width(15.dp),
-                                shape = RoundedCornerShape(15.dp),
-                                backgroundColor = Color(red = 255, green = 193, blue = 62)
-                            ) {
-
-                            }
-
-                        }
-                    }
                 }
-
-
             }
         }
     }

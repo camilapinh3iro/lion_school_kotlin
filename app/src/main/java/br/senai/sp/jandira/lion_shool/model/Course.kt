@@ -1,6 +1,6 @@
 package br.senai.sp.jandira.lion_shool.model
 
-data class Course(
-    val id: Long,
+data class Curso(
+    val nome: String,
     val sigla: String
 )

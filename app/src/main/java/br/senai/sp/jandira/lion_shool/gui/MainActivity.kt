@@ -2,6 +2,7 @@ package br.senai.sp.jandira.lion_shool.gui
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -9,7 +10,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,7 +24,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.senai.sp.jandira.lion_shool.R
+import br.senai.sp.jandira.lion_shool.model.Curso
+import br.senai.sp.jandira.lion_shool.model.CursosList
+import br.senai.sp.jandira.lion_shool.service.RetrofitFactory
 import br.senai.sp.jandira.lion_shool.ui.theme.Lion_shoolTheme
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,6 +91,7 @@ fun Lion_schoolScreen() {
                     onClick = {
                         val intent = Intent(context, SelectCourse::class.java)
                         context.startActivity(intent)
+
                     },
                     modifier = Modifier
                         .width(190.dp)
