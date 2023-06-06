@@ -5,18 +5,18 @@ package br.senai.sp.jandira.lion_shool.gui
 
 import CircularProgressBar
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -25,26 +25,57 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.senai.sp.jandira.lion_shool.R
 import br.senai.sp.jandira.lion_shool.gui.ui.theme.Lion_shoolTheme
+import br.senai.sp.jandira.lion_shool.model.Student
+import br.senai.sp.jandira.lion_shool.model.StudentList
+import br.senai.sp.jandira.lion_shool.service.RetrofitFactory
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class SelectedStudentActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        var matricula = intent.getStringExtra("matricula").toString()
+        Log.i("ds2m", "${matricula}")
         setContent {
             Lion_shoolTheme {
                 // A surface container using the 'background' color from the theme
-                SelectedStudent()
+                SelectedStudent(matricula)
             }
         }
     }
 }
 
-@Preview(showBackground = true)
+//@Preview(showBackground = true)
 @Composable
-fun SelectedStudent() {
+fun SelectedStudent(matricula : String) {
+    var context = LocalContext.current
+    var alunos by remember {
+        mutableStateOf(listOf<br.senai.sp.jandira.lion_shool.model.Student>())
+    }
 
-//    var siglaState by remember {
-//        mutableStateOf(intent)
-//    }
+    // Chamada para a API
+    val call = RetrofitFactory().getAunosService().getAlunoMatricula(matricula)
+
+    call.enqueue(object : Callback<StudentList> {
+
+        override fun onResponse(
+            call: Call<StudentList>,
+            response: Response<StudentList>
+        ) {
+            alunos = response.body()!!.alunos
+            Log.i("ds2m", "onResponse: ${alunos}")
+        }
+
+        override fun onFailure(call: Call<StudentList>, t: Throwable) {
+            Log.i(
+                "ds2m",
+                "onFailure: ${t.message} "
+            )
+        }
+
+    })
+
     Lion_shoolTheme {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
             Column() {

@@ -181,7 +181,10 @@ fun SelectedCourseScreen(sigla: String, nome: String) {
                                 .height(78.dp)
                                 .fillMaxWidth().clickable {
                                     val intent = Intent(context, SelectedStudentActivity::class.java)
+                                    intent.putExtra("matricula", "${it.matricula}")
                                     context.startActivity(intent)
+                                    
+
                                 },
                             backgroundColor = Color.White
 
