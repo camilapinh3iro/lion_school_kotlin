@@ -10,6 +10,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -25,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.senai.sp.jandira.lion_shool.R
 import br.senai.sp.jandira.lion_shool.gui.ui.theme.Lion_shoolTheme
+import br.senai.sp.jandira.lion_shool.model.Disciplina
 import br.senai.sp.jandira.lion_shool.model.Student
 import br.senai.sp.jandira.lion_shool.model.StudentList
 import br.senai.sp.jandira.lion_shool.service.RetrofitFactory
@@ -49,25 +52,33 @@ class SelectedStudentActivity : ComponentActivity() {
 //@Preview(showBackground = true)
 @Composable
 fun SelectedStudent(matricula : String) {
-    var context = LocalContext.current
+
+
+//    var context = LocalContext.current
     var alunos by remember {
-        mutableStateOf(listOf<br.senai.sp.jandira.lion_shool.model.Student>())
+        mutableStateOf(Student())
+    }
+
+    var disciplinas by remember {
+        mutableStateOf(listOf<Disciplina>())
     }
 
     // Chamada para a API
     val call = RetrofitFactory().getAunosService().getAlunoMatricula(matricula)
 
-    call.enqueue(object : Callback<StudentList> {
+    call.enqueue(object : Callback<Student> {
 
         override fun onResponse(
-            call: Call<StudentList>,
-            response: Response<StudentList>
+            call: Call<Student>,
+            response: Response<Student>
         ) {
-            alunos = response.body()!!.alunos
+//            alunos.nome = response.body()!!.nome
+            alunos = response.body()!!
+            disciplinas = response.body()!!.curso?.get(0)!!.disciplinas!!
             Log.i("ds2m", "onResponse: ${alunos}")
         }
 
-        override fun onFailure(call: Call<StudentList>, t: Throwable) {
+        override fun onFailure(call: Call<Student>, t: Throwable) {
             Log.i(
                 "ds2m",
                 "onFailure: ${t.message} "
@@ -79,6 +90,10 @@ fun SelectedStudent(matricula : String) {
     Lion_shoolTheme {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
             Column() {
+                Text(text = "${alunos.nome}")
+                Text(text = "${alunos.status}")
+                Text(text = "${alunos.matricula}")
+//                Text(text = "${alunos.curso}")
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -94,7 +109,7 @@ fun SelectedStudent(matricula : String) {
                             modifier = Modifier.size(124.dp)
                         )
                         Text(
-                            text = "Jose Matheus da Silva Miranda",
+                            text = "${alunos.nome}",
                             fontSize = 18.sp,
                             textAlign = TextAlign.Center,
                             fontWeight = FontWeight.Bold
@@ -113,157 +128,88 @@ fun SelectedStudent(matricula : String) {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Card(
-                        modifier = Modifier
-                            .height(92.dp)
-                            .width(342.dp),
-                        shape = RoundedCornerShape(20.dp),
-                        elevation = 3.dp
-                    ) {
-                        Row(
+
+                    /////////////////////////////////
+                    LazyColumn(){
+                        items(disciplinas){
+                        LaunchedEffect(it.media){
+                            cardColor = if (it.media == ""){
+                                Color.Green
+                            }
+                        } else{
+
+                            }
+                        Card(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 12.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
+                                .height(92.dp)
+                                .width(342.dp),
+                            shape = RoundedCornerShape(20.dp),
+                            elevation = 3.dp
                         ) {
                             Row(
-                                modifier = Modifier.fillMaxHeight(),
-                                verticalAlignment = Alignment.CenterVertically
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 12.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                val progress =
-                                    remember { mutableStateOf(0.82f) } // Set the progress value here
-                                CircularProgressBar(progress.value, 1.dp, color = Color.Blue)
-                                Column(
+                                Row(
                                     modifier = Modifier.fillMaxHeight(),
-                                    verticalArrangement = Arrangement.Center
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Text(
-                                        text = "SOP",
-                                        fontSize = 18.sp,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                    Text(
-                                        text = "Sistemas Operacionais",
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.Light
-                                    )
+                                    val progress =
+                                        remember { mutableStateOf(0.82f) } // Set the progress value here
+                                    CircularProgressBar(progress.value, 1.dp, color = Color.Blue)
+                                    Column(
+                                        modifier = Modifier.fillMaxHeight(),
+                                        verticalArrangement = Arrangement.Center
+                                    ) {
+                                        Text(
+                                            text = "${it.nome}",
+                                            fontSize = 18.sp,
+                                            fontWeight = FontWeight.Medium
+                                        )
+                                        Text(
+                                            text = "${it.media}",
+                                            fontSize = 12.sp,
+                                            fontWeight = FontWeight.Light
+                                        )
+                                    }
+                                }
+                                Card(
+                                    modifier = Modifier
+                                        .height(55.dp)
+                                        .width(3.dp),
+                                    backgroundColor = Color.Blue
+                                ) {
                                 }
                             }
-                            Card(
-                                modifier = Modifier
-                                    .height(55.dp)
-                                    .width(3.dp),
-                                backgroundColor = Color.Blue
-                            ) {
-                            }
+
+                        }
+
+                            Spacer(modifier = Modifier.height(18.dp))
                         }
 
                     }
-                    Spacer(modifier = Modifier.height(18.dp))
-                    Card(
-                        modifier = Modifier
-                            .height(92.dp)
-                            .width(342.dp),
-                        shape = RoundedCornerShape(20.dp),
-                        elevation = 3.dp
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 12.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Row(
-                                modifier = Modifier.fillMaxHeight(),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                val progress =
-                                    remember { mutableStateOf(0.23f) } // Set the progress value here
-                                CircularProgressBar(
-                                    progress.value,
-                                    1.dp,
-                                    color = Color(193, 16, 16)
-                                )
-                                Column(
-                                    modifier = Modifier.fillMaxHeight(),
-                                    verticalArrangement = Arrangement.Center
-                                ) {
-                                    Text(
-                                        text = "IPR",
-                                        fontSize = 18.sp,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                    Text(
-                                        text = "Ipr AAAAA",
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.Light
-                                    )
-                                }
-                            }
-                            Card(
-                                modifier = Modifier
-                                    .height(55.dp)
-                                    .width(3.dp),
-                                backgroundColor = Color(193, 16, 16),
 
-                                ) {
-                            }
-                        }
 
-                    }
-                    Spacer(modifier = Modifier.height(18.dp))
-                    Card(
-                        modifier = Modifier
-                            .height(92.dp)
-                            .width(342.dp),
-                        shape = RoundedCornerShape(20.dp),
-                        elevation = 3.dp,
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 12.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Row(
-                                modifier = Modifier.fillMaxHeight(),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                val progress =
-                                    remember { mutableStateOf(0.55f) } // Set the progress value here
-                                CircularProgressBar(progress.value, 1.dp, Color(229, 182, 87))
-                                Column(
-                                    modifier = Modifier.fillMaxHeight(),
-                                    verticalArrangement = Arrangement.Center
-                                ) {
-                                    Text(
-                                        text = "LIMA",
-                                        fontSize = 18.sp,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                    Text(
-                                        text = "Linguagem de Marcação",
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.Light
-                                    )
-                                }
-                            }
-                            Card(
-                                modifier = Modifier
-                                    .height(55.dp)
-                                    .width(3.dp),
-                                backgroundColor = Color(229, 182, 87)
-                            ) {
-                            }
-                        }
 
-                    }
+
+
+
+
                 }
             }
         }
+    }
+}
+
+@Composable
+getCardBackgroundColor(media: Int): Color {
+    return if (media > 5) {
+        Color.Green // Cor do Card quando a média for maior que 5
+    } else {
+        Color.Red // Cor do Card quando a média for menor ou igual a 5
     }
 }
 
