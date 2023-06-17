@@ -20,7 +20,7 @@ Desenvolver aplicativo para o projeto integrado [Lion School](https://github.com
 - Figma 
 
 ## **Figma**
-Utilizando a ferramenta de design Figma, foi planejado o breakpoint. 
+As telas foram prototipadas utilizando a ferramenta de design Figma. 
 Segue o link: 
 
 - [Link do Figma](https://www.figma.com/file/PejmtuFr6TD0a5Nu6aNeYy/SAS---MOBILE?type=design&node-id=0-1&t=Vpcp4sbd6PzwQH5d-0)
