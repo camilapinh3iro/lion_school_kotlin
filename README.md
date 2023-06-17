@@ -1,4 +1,7 @@
-<h1><strong>Lion School</strong></h1>
+<div> 
+<img  src="./app/src/main/res/drawable/logo_image.png" align="left" width="33" align="center"/>
+<h1><strong>LION SCHOOL</strong></h1>
+</div>
 
 
 |      MOBILE         |         
@@ -8,7 +11,7 @@
 
 ## **Objetivo**
 
-Desenvolver aplicativo para o projeto integrado [Lion School](https://github.com/camilapinh3iro/Projeto_Integrado_Lion_School).
+Desenvolver aplicativo para o projeto integrado [Lion School](https://github.com/camilapinh3iro/Projeto_Integrado_Lion_School) utilizando Kotlin.
 
 
 ## **Tecnologias Utilizadas**
