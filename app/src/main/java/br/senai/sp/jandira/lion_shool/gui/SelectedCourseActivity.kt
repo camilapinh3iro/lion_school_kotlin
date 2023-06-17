@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -106,10 +107,13 @@ fun SelectedCourseScreen(sigla: String, nome: String) {
                                     .width(21.dp)
                                     .height(16.dp)
                             )
+                            val nomeCurso = nome
+                            val regex = Regex("[^\\p{L}\\s]+")
+                            val apenasLetras = nomeCurso.replace(regex, "")
                             Text(
                                 modifier = Modifier.fillMaxWidth(),
                                 textAlign = TextAlign.Center,
-                                text = nome,
+                                text = apenasLetras,
                                 fontSize = 15.sp,
                                 fontWeight = FontWeight.Normal,
                                 color = Color.White,
@@ -179,11 +183,13 @@ fun SelectedCourseScreen(sigla: String, nome: String) {
                         Card(
                             modifier = Modifier
                                 .height(78.dp)
-                                .fillMaxWidth().clickable {
-                                    val intent = Intent(context, SelectedStudentActivity::class.java)
+                                .fillMaxWidth()
+                                .clickable {
+                                    val intent =
+                                        Intent(context, SelectedStudentActivity::class.java)
                                     intent.putExtra("matricula", "${it.matricula}")
                                     context.startActivity(intent)
-                                    
+
 
                                 },
                             backgroundColor = Color.White
@@ -211,16 +217,40 @@ fun SelectedCourseScreen(sigla: String, nome: String) {
 
                                     Spacer(modifier = Modifier.width(15.dp))
 
-                                    Column() {
-                                        Text(
-                                            "${it.nome}"
-                                        )
-                                        Text(
-                                            "${it.status}",
-                                            color = Color(red = 93, green = 92, blue = 92),
-                                            fontSize = (14.sp)
-                                        )
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Column() {
+                                            Text(
+                                                text = "${it.nome}".uppercase()
+                                            )
+                                            Text(
+                                                "${it.status}",
+                                                color = Color(red = 93, green = 92, blue = 92),
+                                                fontSize = (14.sp)
+                                            )
+                                        }
+
+
+                                        val cor =  if (it.status == "Cursando") {
+                                            Color(252, 191, 64)
+                                        } else {
+                                            Color(51, 71, 176)
+                                        }
+
+                                        Card(
+                                            modifier = Modifier
+                                                .width(10.dp)
+                                                .height(10.dp),
+                                            shape = RoundedCornerShape(100),
+                                            backgroundColor = cor
+                                        ) {
+
+                                        }
                                     }
+
                                 }
                             }
                         }

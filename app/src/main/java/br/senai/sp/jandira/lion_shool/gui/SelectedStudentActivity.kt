@@ -31,6 +31,7 @@ import br.senai.sp.jandira.lion_shool.model.Disciplina
 import br.senai.sp.jandira.lion_shool.model.Student
 import br.senai.sp.jandira.lion_shool.model.StudentList
 import br.senai.sp.jandira.lion_shool.service.RetrofitFactory
+import coil.compose.AsyncImage
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -90,30 +91,71 @@ fun SelectedStudent(matricula : String) {
     Lion_shoolTheme {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
             Column() {
-                Text(text = "${alunos.nome}")
-                Text(text = "${alunos.status}")
-                Text(text = "${alunos.matricula}")
-//                Text(text = "${alunos.curso}")
+
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .padding(46.dp)
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.student_boy),
-                            contentDescription = "oi",
-                            modifier = Modifier.size(124.dp)
-                        )
-                        Text(
-                            text = "${alunos.nome}",
-                            fontSize = 18.sp,
-                            textAlign = TextAlign.Center,
-                            fontWeight = FontWeight.Bold
-                        )
+
+                  Column(
+
+                  ) {
+                      Row(
+                          verticalAlignment = Alignment.CenterVertically,
+                          modifier = Modifier
+                              .padding(top = 46.dp, end = 46.dp, start = 46.dp, bottom = 30.dp)
+                      ) {
+
+                          AsyncImage(
+                              model = alunos.foto,
+                              contentDescription = "${alunos.nome}",
+                              modifier = Modifier.size(124.dp)
+                          )
+
+                          Text(
+                              text = "${alunos.nome}".uppercase(),
+                              fontSize = 20.sp,
+                              textAlign = TextAlign.Center,
+                              fontWeight = FontWeight.Bold
+                          )
+                      }
+
+                      Column(
+                          modifier = Modifier
+                              .padding( end = 46.dp, start = 46.dp, bottom = 25.dp)
+                      ) {
+
+                          Row() {
+                              Text(
+                                  text = "Matricula:",
+                                  fontSize = 15.sp,
+                                  fontWeight = FontWeight.Bold
+                              )
+                              Text(
+                                  text = "${alunos.matricula}",
+                                  modifier = Modifier.padding(start = 5.dp),
+                                  fontSize = 14.sp,
+                                  fontWeight = FontWeight.Medium
+                              )
+                          }
+                          Row() {
+                              Text(
+                                  text = "Status:",
+                                  fontSize = 15.sp,
+                                  textAlign = TextAlign.Start,
+                                  fontWeight = FontWeight.Bold
+                              )
+                              Text(
+                                  text = "${alunos.status}",
+                                  modifier = Modifier.padding(start = 5.dp),
+                                  fontSize = 14.sp,
+                                  fontWeight = FontWeight.Medium
+                              )
+                          }
+                  }
+
+
+
                     }
                 }
                 Text(
@@ -121,8 +163,9 @@ fun SelectedStudent(matricula : String) {
                         .fillMaxWidth()
                         .padding(vertical = 24.dp),
                     text = "MATÉRIAS",
+                    fontSize = 18.sp,
                     textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.Bold
                 )
                 Column(
                     modifier = Modifier.fillMaxWidth(),
@@ -132,13 +175,7 @@ fun SelectedStudent(matricula : String) {
                     /////////////////////////////////
                     LazyColumn(){
                         items(disciplinas){
-                        LaunchedEffect(it.media){
-                            cardColor = if (it.media == ""){
-                                Color.Green
-                            }
-                        } else{
 
-                            }
                         Card(
                             modifier = Modifier
                                 .height(92.dp)
@@ -153,13 +190,22 @@ fun SelectedStudent(matricula : String) {
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
+                                val media =
+                                    remember { mutableStateOf(it.media.toFloat()) }// Set the progress value here
+                                val progress = media.value / 100
+
+                                val cor =  if (progress > 0.50) {
+                                    Color(51, 71, 176)
+                                } else if (progress < 0.50 ){
+                                    Color(193, 16, 16)
+                                } else {
+                                    Color(252, 191, 64)
+                                }
                                 Row(
                                     modifier = Modifier.fillMaxHeight(),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    val progress =
-                                        remember { mutableStateOf(0.82f) } // Set the progress value here
-                                    CircularProgressBar(progress.value, 1.dp, color = Color.Blue)
+                                    CircularProgressBar(progress, 1.dp, cor)
                                     Column(
                                         modifier = Modifier.fillMaxHeight(),
                                         verticalArrangement = Arrangement.Center
@@ -170,7 +216,7 @@ fun SelectedStudent(matricula : String) {
                                             fontWeight = FontWeight.Medium
                                         )
                                         Text(
-                                            text = "${it.media}",
+                                            text = "Matéria estudada",
                                             fontSize = 12.sp,
                                             fontWeight = FontWeight.Light
                                         )
@@ -180,7 +226,7 @@ fun SelectedStudent(matricula : String) {
                                     modifier = Modifier
                                         .height(55.dp)
                                         .width(3.dp),
-                                    backgroundColor = Color.Blue
+                                    backgroundColor = cor
                                 ) {
                                 }
                             }
@@ -204,14 +250,7 @@ fun SelectedStudent(matricula : String) {
     }
 }
 
-@Composable
-getCardBackgroundColor(media: Int): Color {
-    return if (media > 5) {
-        Color.Green // Cor do Card quando a média for maior que 5
-    } else {
-        Color.Red // Cor do Card quando a média for menor ou igual a 5
-    }
-}
+
 
 
 //@Preview(showBackground = true, showSystemUi = true)
