@@ -5,7 +5,6 @@
 |:-------------------:|
 |![](./app/src/main/res/drawable/screen_shot.png)
 
-[Clique aqui](https://green-world-senai.netlify.app/) para acessar o site. 
 
 ## **Objetivo**
 
